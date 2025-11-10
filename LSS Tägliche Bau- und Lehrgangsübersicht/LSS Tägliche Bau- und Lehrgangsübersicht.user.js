@@ -1,13 +1,13 @@
 // ==UserScript==
 // @name         LSS Tägliche Bau- und Lehrgangsübersicht
 // @namespace    https://www.leitstellenspiel.de/
-// @version      1.0
+// @version      1.1
 // @description  Alle heute fertig werdenden Gebäude-Erweiterungen, Lagerräume, Spezialisierungen und Lehrgänge auf einen Blick.
 // @author       BlueLightWarrior
 // @match        https://www.leitstellenspiel.de/*
 // @grant        GM_addStyle
 // @grant        GM_getResourceURL
-// @resource     icon https://github.com/BlueLightWarrior/LSS-Scripte/raw/main/LSS%20T%C3%A4gliche%20Bau%C3%BCbersicht/Icon.png
+// @resource     icon https://github.com/BlueLightWarrior/LSS-Scripte/raw/main/LSS%20T%C3%A4gliche%20Bau-%20und%20Lehrgangs%C3%BCbersicht/Icon.png
 // ==/UserScript==
 
 (function () {
