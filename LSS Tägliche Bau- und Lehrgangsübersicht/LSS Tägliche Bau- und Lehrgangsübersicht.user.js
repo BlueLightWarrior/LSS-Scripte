@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         LSS Tägliche Bau- und Lehrgangsübersicht
 // @namespace    https://www.leitstellenspiel.de/
-// @version      1.3
+// @version      1.4
 // @description  Zeigt alle heute fertig werdenden Gebäude-Erweiterungen, Lagerräume, Spezialisierungen und Lehrgänge auf einen Blick.
 // @author       BlueLightWarrior
 // @match        https://www.leitstellenspiel.de/*
@@ -24,10 +24,15 @@
         img.width = 24;
         img.height = 24;
         img.style.verticalAlign = "middle";
-        img.style.marginRight = "6px";
+        img.style.marginRight = "7px";
 
-        a.append(img, document.createTextNode("Bau- und Lehrgangsübersicht"));
-        a.addEventListener("click", e => { e.preventDefault(); showDailyOverview(); });
+        // 🔹 Zwei echte Leerzeichen zwischen Icon und Text
+        a.append(img, document.createTextNode("  "), document.createTextNode("Bau- und Lehrgangsübersicht"));
+
+        a.addEventListener("click", e => {
+            e.preventDefault();
+            showDailyOverview();
+        });
 
         li.append(a);
         document.querySelector('#menu_profile + .dropdown-menu > li.divider')?.before(li);
@@ -42,7 +47,6 @@
         day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit"
     });
 
-    // Hilfsfunktion: fetch in Batches für begrenzte parallele Requests
     async function fetchInBatches(urlObjs, batchSize = 3) {
         const results = [];
         for (let i = 0; i < urlObjs.length; i += batchSize) {
@@ -150,25 +154,42 @@
 
     function showSimpleModal(content) {
         document.querySelector("#lss-simple-modal")?.remove();
+
         const modal = document.createElement("div");
         modal.id = "lss-simple-modal";
-        modal.innerHTML = `
-            <div class="modal-backdrop fade in"></div>
-            <div class="modal" style="display:block;">
-                <div class="modal-dialog" style="width:600px;">
-                    <div class="modal-content">
-                        <div class="modal-header" style="background:#c9302c; color:white;">
-                            <button type="button" class="close" data-dismiss="modal">&times;</button>
-                            <h4 class="modal-title">Bau- und Lehrgangsübersicht</h4>
-                        </div>
-                        <div class="modal-body">${content}</div>
-                    </div>
-                </div>
+        modal.style.position = "fixed";
+        modal.style.top = 0;
+        modal.style.left = 0;
+        modal.style.width = "100%";
+        modal.style.height = "100%";
+        modal.style.backgroundColor = "rgba(0,0,0,0.5)";
+        modal.style.display = "flex";
+        modal.style.alignItems = "flex-start";
+        modal.style.justifyContent = "center";
+        modal.style.paddingTop = "50px";
+        modal.style.zIndex = 10000;
+
+        const dialog = document.createElement("div");
+        dialog.style.backgroundColor = "#fff";
+        dialog.style.borderRadius = "8px";
+        dialog.style.width = "600px";
+        dialog.style.maxHeight = "80%";
+        dialog.style.overflowY = "auto";
+        dialog.innerHTML = `
+            <div style="background:#c9302c; color:white; padding:10px; display:flex; justify-content:space-between; align-items:center;">
+                <h4 style="margin:0;">Bau- und Lehrgangsübersicht</h4>
+                <button class="close" style="background:none; border:none; color:white; font-size:20px; cursor:pointer;">&times;</button>
             </div>
+            <div style="padding:10px;">${content}</div>
         `;
-        document.body.append(modal);
-        modal.querySelector(".close").addEventListener("click", () => modal.remove());
-        modal.querySelector(".modal-backdrop").addEventListener("click", () => modal.remove());
+
+        modal.appendChild(dialog);
+        document.body.appendChild(modal);
+
+        dialog.querySelector(".close").addEventListener("click", () => modal.remove());
+        modal.addEventListener("click", e => {
+            if (e.target === modal) modal.remove();
+        });
     }
 
     const observer = new MutationObserver(() => {
@@ -178,4 +199,5 @@
         }
     });
     observer.observe(document.body, { childList: true, subtree: true });
+
 })();
